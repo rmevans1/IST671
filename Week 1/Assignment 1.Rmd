@@ -27,3 +27,33 @@ data("bodyfat", package = "TH.data")
 str(bodyfat)
 ```
 
+#Chapter 2- Data Import/Export
+
+##2.1- Save/Load R Data
+This will create an array of the numbers 1-10 and save it to data/dumData.Rdata. It will then delete the array "a" and reload the file and print out the file contents
+```{r}
+a <- 1:10
+save(a, file="data/dumData.Rdata")
+rm(a)
+load("data/dumData.Rdata")
+print(a)
+```
+
+##2.2- Import fram and Export to .CSV files
+Here we create a data frame and save it to a .csv file and then reload the same .csv and print out the contents of it.
+```{r}
+var1 <- 1:5
+var2 <- (1:5) / 10
+var3 <- c("R", "and", "Data Mining", "Examples", "Case Studies")
+a <- data.frame(var1, var2, var3)
+names(a) <- c("VariableInt", "VariableReal", "VariableChar")
+write.csv(a, "data/dummyData.csv", row.names = FALSE)
+b <- read.csv("data/dummyData.csv")
+print(b)
+```
+
+##2.3- Import Data From SAS
+This section goes over how to import data from SAS. However, I am unable to do this as I do not have SAS installed on my system.
+
+##2.4- Import/Export via ODBC
+This ection goes over how to import data from a data base connection. I am unable to do this as I do not have an available database to connect to.
