@@ -1,0 +1,29 @@
+---
+title: "Assignment 1"
+author: "Robert Evans"
+date: "March 19, 2017"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Chapter 1
+##Iris Data Set
+```{r}
+str(iris)
+```
+
+##Bodyfat Dataset
+```{r}
+#Commenting the install.packages out to prevent installation from running multiple times
+#install.packages("mboost")
+library(mboost)
+#This no longer works data is now in TH.data
+#source: http://www.rdatamining.com/books/rdm/faq/whereistofindthebodyfatdata
+#data("bodyfat", package="mboost")
+data("bodyfat", package = "TH.data")
+str(bodyfat)
+```
+
