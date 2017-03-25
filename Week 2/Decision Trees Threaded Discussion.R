@@ -26,3 +26,16 @@ test = -train
 training_data = Carseats[train,]
 testing_data = Carseats[test,]
 testing_high = High[test]
+
+# fit the tree model using training data
+
+tree_model = tree(High ~., training_data)
+
+plot(tree_model)
+text(tree_model, pretty=0)
+
+
+# check the models performance
+
+tree_pred = predict(tree_model, testing_data, type="class")
+mean(tree_pred != testing_high) #28.5%
