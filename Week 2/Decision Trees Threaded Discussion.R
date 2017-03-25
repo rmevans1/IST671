@@ -39,3 +39,29 @@ text(tree_model, pretty=0)
 
 tree_pred = predict(tree_model, testing_data, type="class")
 mean(tree_pred != testing_high) #28.5%
+
+### Prune the tree
+
+## cross validation to check where to stop pruning
+
+set.seed(3)
+
+cv_tree = cv.tree(tree_model, FUN = prune.misclass)
+names(cv_tree)
+
+
+plot(cv_tree$size,
+     cv_tree$dev,
+     type = "b")
+
+
+
+### prune the tree
+pruned_model = prune.misclass(tree_model, best = 9)
+plot(pruned_model)
+text(pruned_model, pretty=0)
+
+
+### check how it is doing
+tree_pred = predict(pruned_model, testing_data, type="class")
+mean(tree_pred != testing_high) #23%
