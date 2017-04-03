@@ -1,0 +1,32 @@
+---
+title: "Assignment 3"
+author: "Robert Evans"
+date: "April 2, 2017"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#8.5.1- Classification with Original Data
+The ctree() package is used to classify time series data with original data. In this section the class labels get changed into categorical values before the classification takes place to prevent class lables being interpreted as real numbers.
+```{r}
+sc <- read.table("data/synthetic_control.data", header=F, sep="")
+classId <- c(rep("1",100), rep("2",100), rep("3",100),
+             rep("4",100), rep("5",100), rep("6",100))
+newSc <- data.frame(cbind(classId, sc))
+
+library(party)
+ct <- ctree(classId ~ ., data=newSc,
+            controls = ctree_control(minsplit=30, minbucket=10, maxdepth =5))
+pClassId <- predict(ct)
+table(classId, pClassId)
+
+#accuracy
+(sum(classId==pClassId))/nrow(sc)
+
+#plot decision tree
+plot(ct, ip_args=list(pval=FALSE), ep_args=list(digits=0))
+```
+
