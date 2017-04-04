@@ -58,3 +58,14 @@ table(classId, pClassId)
 plot(ct, ip_args=list(pval=FALSE), ep_args=list(digits=0))
 ```
 
+#8.5.3- k-NN Classification
+Create a model of k-NN classification to find the k nearest neighbors of a new instance. The DTW method is an invalid distance method. This block does not run. Commented out so that I can get it to compile to a word document
+```{r}
+#k <- 20
+#newTs <- sc[501,] + runif(100)*15
+#distances <- dist(newTS, sc, method="DTW")
+#s <- sort(as.vector(distances), index.return=TRUE)
+# class IDs of k nearest neighbors
+#table(classId[s$ix[1:k]])
+```
+
