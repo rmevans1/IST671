@@ -30,3 +30,31 @@ table(classId, pClassId)
 plot(ct, ip_args=list(pval=FALSE), ep_args=list(digits=0))
 ```
 
+#8.5.2- Classification with Extracted Features
+Extract features using a discrete wavelet transform (DWT)
+```{r}
+#install.packages("wavelets")
+library(wavelets)
+wtData <- NULL
+for(i in 1:nrow(sc)) {
+  a <- t(sc[i,])
+  wt <- dwt(a, filter="haar", boundary="periodic")
+  wtData <- rbind(wtData,
+                  unlist(c(wt@W, wt@V[[wt@level]])))
+}
+wtData <- as.data.frame(wtData)
+wtSc <- data.frame(cbind(classId, wtData))
+
+#Create a decision tree with dwt
+ct <- ctree(classId ~ ., data = wtSc,
+            controls = ctree_control(minsplit=30, minbucket=10, maxdepth=5))
+pClassId <- predict(ct)
+table(classId, pClassId)
+
+#accuarcy rate
+(sum(classId==pClassId)) / nrow(wtSc)
+
+#plot the decision tree
+plot(ct, ip_args=list(pval=FALSE), ep_args=list(digits=0))
+```
+
