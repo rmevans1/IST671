@@ -23,3 +23,20 @@ library(plyr)
 library(ggplot2)
 library(reshape2)
 ```
+
+#Importing automobile fuel effiency data into R
+In this section the data is imported into R. In addition information on the variables is also imported
+```{r}
+#import the data- note that the data can be imported directly from a zip file if the file name is known
+vehicles <- read.csv(unz("data/vehicles.csv.zip", "vehicles.csv"), stringsAsFactors = F)
+
+#view the first few lines in the data set
+head(vehicles)
+
+#load variables information
+labels <- do.call(rbind, strsplit(readLines("data/variables.txt"), " - "))
+
+#view the first few lines of variables
+head(labels)
+```
+
