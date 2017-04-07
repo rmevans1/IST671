@@ -1,0 +1,25 @@
+---
+title: "Extra Credit Assignment 1"
+author: "Robert Evans"
+date: "April 7, 2017"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Preparing R for your first project
+In this section the following packages are loaded and installed. The install commands are commented out so that the kintting of the word document will run.
+
+* plyr- Allows the use of the split-apply-combine data analysis pattern
+* ggplot2- Makes visualizations eaiser
+* reshape2
+```{r}
+#install.packages("plyr")
+#install.packages("ggplot2")
+#install.packages("reshape2")
+library(plyr)
+library(ggplot2)
+library(reshape2)
+```
