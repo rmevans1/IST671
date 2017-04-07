@@ -78,3 +78,86 @@ vehicles$trany2 <- as.factor(vehicles$trany2)
 table(vehicles$trany2)
 ```
 
+#Analyzing automobile fuel efficiency over time
+THis section analyzes fuel efficiency over time in relation to other data points.
+
+##Graphing fuel efficiency by year for all cars
+```{r}
+#create a variable mpgByYr this is miles per gallon by year
+mpgByYr <- ddply(vehicles, ~year, summarise, avgMPG = mean(comb08), avgHghy = mean(highway08), avgCity = mean(city08))
+
+ggplot(mpgByYr, aes(year, avgMPG)) + geom_point() + geom_smooth() + xlab("Year") + ylab("Average MPG") + ggtitle("All cars")
+```
+
+It appears that fuel economy has increased a good amount since 2010. However, that could be because there has been an increase in other types of fuel that is used by other cars (electric, hybrid)
+```{r}
+table(vehicles$fuelType1)
+```
+
+##Gasoline cars only
+This graph will filter out just cars that run off gasolineShow in New WindowClear OutputExpand/Collapse Output
+```{r}
+gasCars <- subset(vehicles, fuelType1 %in% c("Regular Gasoline", "Premium Gasoline", "Midgrade Gasoline") & fuelType2 == "" & atvType != "Hybrid")
+
+mpgByYr_Gas <- ddply(gasCars, ~year, summarise, avgMPG = mean(comb08))
+
+ggplot(mpgByYr_Gas, aes(year, avgMPG)) + geom_point() + geom_smooth() + xlab("Year") + ylab("Average MPG") + ggtitle("Gasoline cars")
+```
+
+##Graph fuel economy vs engine size
+Looking to see if bigger engines have a lower fuel economy
+```{r}
+#Data type of displ
+typeof(gasCars$displ)
+
+#convert displ to a numeric variable
+gasCars$displ <- as.numeric(gasCars$displ)
+
+#create graph
+ggplot(gasCars, aes(displ, comb08)) + geom_point() + geom_smooth()
+```
+
+##Year vs average enginge displacement (size)
+Looking to see if more smaller engines were made in later years
+```{r}
+#Get average car size by year
+avgCarSize <- ddply(gasCars, ~year, summarise, avgDispl = mean(displ))
+
+#graph size vs year
+ggplot(avgCarSize, aes(year, avgDispl)) + geom_point() + geom_smooth() + xlab("Year") + ylab("Average engine displacement (l)")
+```
+
+##Looking at average mpg vs average displacement in text form
+```{r}
+#Create a data frame with year average mpg and average displacement
+byYear <- ddply(gasCars, ~year, summarise, avgMPG = mean(comb08), avgDispl = mean(displ))
+head(byYear)
+
+#Convert byYear to a long form showing year, variable, and value in each row
+byYear2 = melt(byYear, id = "year")
+levels(byYear2$variable) <- c("Average MPG", "Avg engine displacement")
+
+head(byYear2)
+```
+
+##Create 2 graphs on top of each other
+Create graphs that show average mpg on top and average displacement on bottom
+```{r}
+ggplot(byYear2, aes(year, value)) + geom_point() + geom_smooth() + facet_wrap(~variable, ncol = 1, scales = "free_y") + xlab("Year") + ylab("")
+```
+
+##Create a box and whisker plot of 4 cyliner engines seperated by auto and manual
+In this section a graph is created that shows average mpg for 4 cylinder engines over time separated by auto and manual transaction
+```{r}
+#filter out 4 cylinder engines
+gasCars4 <- subset(gasCars, cylinders == "4")
+
+#build the graph
+ggplot(gasCars4, aes(factor(year), comb08)) + geom_boxplot() + facet_wrap(~trany2, ncol = 1) + theme(axis.text.x = element_text(angle = 45)) + labs(x = "Year", y = "MPG")
+```
+
+##Proportion of manual vs automatic cars each year
+This section will create a graph of proportions of automatic and manual transmissions each year
+```{r}
+ggplot(gasCars4, aes(factor(year), fill = factor(trany2))) + geom_bar(position = "fill") + labs(x = "Year", y = "Proprotion of cars", fill = "Transmission") + theme(axis.text.x = element_text(angle = 45)) + geom_hline(yintercept = 0.5, linetype = 2)
+```
