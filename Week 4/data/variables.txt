@@ -13,7 +13,7 @@ cityUF - EPA city utility factor (share of electricity) for PHEV
 co2 - tailpipe CO2 in grams/mile for fuelType1 (5)
 co2A - tailpipe CO2 in grams/mile for fuelType2 (5)
 co2TailpipeAGpm - tailpipe CO2 in grams/mile for fuelType2 (5)
-co2TailpipeGpm- tailpipe CO2 in grams/mile for fuelType1 (5)
+co2TailpipeGpm - tailpipe CO2 in grams/mile for fuelType1 (5)
 comb08 - combined MPG for fuelType1 (2), (11)
 comb08U - unrounded combined MPG for fuelType1 (2), (3)
 combA08 - combined MPG for fuelType2 (2)
@@ -36,7 +36,7 @@ fuelType1 - fuel type 1. For single fuel vehicles, this will be the only fuel. F
 fuelType2 - fuel type 2. For dual fuel vehicles, this will be the alternative fuel (e.g. E85, Electricity, CNG, LPG). For single fuel vehicles, this field is not used
 ghgScore - EPA GHG score (-1 = Not available)
 ghgScoreA - EPA GHG score for dual fuel vehicle running on the alternative fuel (-1 = Not available)
-guzzler- if G or T, this vehicle is subject to the gas guzzler tax
+guzzler - if G or T, this vehicle is subject to the gas guzzler tax
 highway08 - highway MPG for fuelType1 (2), (11)
 highway08U - unrounded highway MPG for fuelType1 (2), (3)
 highwayA08 - highway MPG for fuelType2 (2)
