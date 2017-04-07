@@ -40,3 +40,41 @@ labels <- do.call(rbind, strsplit(readLines("data/variables.txt"), " - "))
 head(labels)
 ```
 
+#Exploring and describing fuel efficiency
+Get some basic information on what the data set looks like. Some basic analysis will also be done.
+```{r}
+#Number of rows (observations) in the data set
+nrow(vehicles)
+
+#number of columns (variables) in the data set
+ncol(vehicles)
+
+#varible names (column headers)
+names(vehicles)
+
+#get the number of unique years
+length(unique(vehicles[,"year"]))
+
+#the first year (min function)
+first_year <- min(vehicles[, "year"])
+first_year
+
+last_year <- max(vehicles[, "year"])
+last_year
+
+#table of fuel types and counts in the data set
+table(vehicles$fuelType1)
+
+#exploring transmission types
+#set missing data to NA
+vehicles$trany[vehicles$trany == ""] <- NA
+
+#create a new variable trany2
+#set variable to Auto if first four characters to autao and manual if not
+vehicles$trany2 <- ifelse(substr(vehicles$trany, 1, 4) == "Auto", "Auto", "Manual")
+
+#Convert the new variable to a factor and use table to see the distribution of values
+vehicles$trany2 <- as.factor(vehicles$trany2)
+table(vehicles$trany2)
+```
+
