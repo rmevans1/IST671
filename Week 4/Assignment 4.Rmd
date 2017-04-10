@@ -112,6 +112,9 @@ plot(rules, method="graph", control=list(type="items"))
 plot(rules, method="paracoord", control=list(reorder=TRUE))
 ```
 
+#9.5- Discussions and Further Readings
+There was no coding to do in this section. This was just a summary of chapter 9.
+
 
 
 
