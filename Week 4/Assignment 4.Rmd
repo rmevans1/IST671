@@ -89,5 +89,29 @@ rules.pruned <- rules.sorted[!redundant]
 inspect(rules.pruned)
 ```
 
+#9.4- Visualizing Association Rules
+This section covers different ways to visualize the association rules. These methods are: scatter plot, ballon plot, graph and parallel coordinates plot. These are provided through the arulesViz package
+```{r}
+#Install and load arulesViz package
+#install.packages("arulesViz")
+library(arulesViz)
+
+#create a scatter plot of rules
+plot(rules)
+
+#Create a grouped matrix of rules
+plot(rules, method="grouped")
+
+#Create a line graph of rules
+plot(rules, method="graph")
+
+#Create a graph of items
+plot(rules, method="graph", control=list(type="items"))
+
+#Create a parallel coordinates plot of the rules
+plot(rules, method="paracoord", control=list(reorder=TRUE))
+```
+
+
 
 
