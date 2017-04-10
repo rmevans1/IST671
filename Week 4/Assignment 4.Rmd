@@ -45,3 +45,34 @@ titanic <- read.table("data/Dataset.data", header=F)
 names(titanic) <- c("Class", "Sex", "Age", "Survived")
 ```
 
+#9.2- Association Rule Mining
+In this section the arules package is used to create association rules between commonalities in the titanic.raw dataset.
+```{r}
+#Install and load the arules package
+#install.packages("arules")
+library(arules)
+
+#find association rules with the default settings
+rules <- apriori(titanic.raw)
+
+#display the rule set
+rules
+
+quality(rules) <- quality(rules)
+#As a note the rhs column shows values other than survived. This is solved in the next step
+inspect(rules)
+
+#create an association rule set where only the right hand side shows if the passenger survived. This is done through the appearance paramater. Notice the rhs is set to a list of Survived=No and Survived=Yes this will keep the results to just survived.
+rules <- apriori(titanic.raw,
+                 parameter = list(minlen=2, supp=0.005, conf=0.8),
+                 appearance = list(rhs=c("Survived=No", "Survived=Yes"),
+                                   default="lhs"),
+                 control = list(verbose=F))
+#sort rules by lift
+rules.sorted <- sort(rules, by="lift")
+
+#display new rule set. Notice this time there are only rules where the right hand side (RHS) is set to survived.
+inspect(rules.sorted)
+```
+
+
