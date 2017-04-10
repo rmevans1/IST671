@@ -75,4 +75,19 @@ rules.sorted <- sort(rules, by="lift")
 inspect(rules.sorted)
 ```
 
+#9.3- Removing Redundancy
+In this section redundant rules that don't provide any additional knowledge are removed. Take for example Rule number 2. {Class=2nd,Sex=Female,Age=Child}  => {Survived=Yes} Since Rule number 1: {Class=2nd,Age=Child}  => {Survived=Yes} states that everyone survived this rule does not provide any additional information.
+```{r}
+#find redundant rules
+subset.matrix <- is.subset(rules.sorted, rules.sorted)
+subset.matrix[lower.tri(subset.matrix, diag=T)] <- FALSE
+redundant <- colSums(subset.matrix, na.rm=T) >= 1
+which(redundant)
+
+#remove redundant rules
+rules.pruned <- rules.sorted[!redundant]
+inspect(rules.pruned)
+```
+
+
 
