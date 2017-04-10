@@ -1,0 +1,47 @@
+---
+title: "Assignment 4"
+author: "Robert Evans"
+date: "April 9, 2017"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#9.1- The Titanic Data Set
+This section loads the titanic dataset. This data set is a 4-dimensional table with the class (1st, 2nd, etc.), Sex, Age, and if they survived the sinking of the Titanic. In this recordset each row represents a passenger.
+```{r}
+#get information on dataset variables
+str(Titanic)
+
+#convert dataset to data frame
+df <- as.data.frame(Titanic)
+head(df)
+
+#convert data set to a raw format
+titanic.raw <- NULL
+for(i in 1:4){
+  titanic.raw <- cbind(titanic.raw, rep(as.character(df[,i]), df$Freq))
+}
+titanic.raw <- as.data.frame(titanic.raw)
+names(titanic.raw) <- names(df)[1:4]
+dim(titanic.raw)
+
+#get information on dataset variables
+str(titanic.raw)
+
+#display first few rows
+head(titanic.raw)
+
+#get counts of each variable
+summary(titanic.raw)
+
+#Read the first five lines of data from Dataset.data
+readLines("data/Dataset.data", n=5)
+
+#load dataset.data into R
+titanic <- read.table("data/Dataset.data", header=F)
+names(titanic) <- c("Class", "Sex", "Age", "Survived")
+```
+
