@@ -16,3 +16,30 @@ This chapter goes over four different types of clustering
 * k-Medoids Clustering
 * Hierarchical Clustering
 * Density-based Clustering
+
+##Section 6.1- k-Means Clustering
+This section goes over how to set up a k-Means cluster of the iris data set
+```{r}
+# Load the iris data set into iris
+iris2 <- iris
+
+#remove the species variable from the data
+iris2$Species <- NULL
+
+#setting a seed to get repeatble results
+set.seed(123)
+#apply the kmeans tothe iris2 data set. The 3 sets the cluster count to 3
+(kmeans.result <- kmeans(iris2, 3))
+
+#compare the actual classifications with the predicted clustering result using a confusion matrix
+table(iris$Species, kmeans.result$cluster)
+#after running the above code its easy to see that the setosa species is easy to separate from the other species.
+
+#plot the species clusters with Sepal.Length and Sepal.Width
+plot(iris2[c("Sepal.Length", "Sepal.Width")], col = kmeans.result$cluster)
+points(kmeans.result$centers[,c("Sepal.Length", "Sepal.Width")], col = 1:3,
+       pch = 8, cex=2)
+#after looking at the graph you can see that the Setosa species (black points) are easily separated while the versicolor and virginica species have some overlap
+
+```
+
