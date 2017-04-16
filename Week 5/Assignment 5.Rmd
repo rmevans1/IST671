@@ -1,0 +1,18 @@
+---
+title: "Assignment 5"
+author: "Robert Evans"
+date: "April 16, 2017"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Chapter 6- Clustering
+This chapter goes over four different types of clustering
+
+* k-Means Clustering
+* k-Medoids Clustering
+* Hierarchical Clustering
+* Density-based Clustering
