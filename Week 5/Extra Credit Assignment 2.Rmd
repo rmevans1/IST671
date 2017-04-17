@@ -26,3 +26,32 @@ library(stringr)
 library(ggplot2)
 ```
 
+##Acquiring and cleaning football data
+In this section data from yahoo sports will be downloaded and cleaned. As a note the year will be able to be changed simply by changing the year variable
+```{r}
+#Set the year
+year <- 2013
+
+#download offensive data
+url <- paste("http://sports.yahoo.com/nfl/stats/byteam?group=Offense&cat=Total&conference=NFL&year=season_",year,"&sort=530&old_category=Total&old_group=Offense")
+
+#process offensive data
+offense <- readHTMLTable(url, encoding = "UTF-8", colClasses="character")[[7]]
+
+#clean the offensive data. Remove blank columns and set data types of other columns
+offense <- offense[,-c(2,4,6,8,10,12,14,16,18,20,22,24,26,28)]
+offense[,1] <- as.character(offense[,1])
+offense[,2:13] <- apply(offense[,2:13],2,as.numeric)
+offense[,14] <- as.numeric(substr(offense[,14], 1, 2)) * 60 + as.numeric(substr(offense[,14], 4, 6))
+
+#download defensive data
+url <- paste("http://sports.yahoo.com/nfl/stats/byteam?group=Defense&cat=Total&conference=NFL&year=season_",year,"&sort=530&old_category=Total&old_group=Defense")
+
+#process offensive data
+defense <- readHTMLTable(url, encoding = "UTF-8", colClasses="character")[[7]]
+
+#clean the defensive data. Remove blank columns and set data types of other columns
+defense <- defense[,-c(2,4,6,8,10,12,14,16,18,20,22,24,26,28)]
+defense[,1] <- as.character(defense[,1])
+defense[,2:13] <- apply(defense[,2:13],2,as.numeric)
+```
