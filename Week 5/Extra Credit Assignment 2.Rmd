@@ -1,0 +1,28 @@
+---
+title: "Extra Credit Assignment 2"
+author: "Robert Evans"
+date: "April 17, 2017"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Simulating American Football Data
+This assignment will download and process football data. After doing so games will be simulated
+
+##Introduction
+Install and load required packages
+```{r}
+#install.packages("XML")
+#install.packages("RSQLite")
+#install.packages("stringr")
+#install.packages("ggplot2")
+
+library(XML)
+library(RSQLite)
+library(stringr)
+library(ggplot2)
+```
+
