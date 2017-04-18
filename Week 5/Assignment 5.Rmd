@@ -75,4 +75,19 @@ plot(pam.result)
 layout(matrix(1)) # change back to one graph per page
 ```
 
+##6.3 Hierarchical Clustering
+This section creates a clustering model based off of a hierarchical or tree set up
+```{r}
+#get a sample of 40 records and remove the species variable
+idx <- sample(1:dim(iris)[1], 40)
+irisSample <- iris[idx,]
+irisSample$Species <- NULL
+
+#create the cluster
+hc <- hclust(dist(irisSample), method="ave")
+
+#plot the cluster
+plot(hc, hang = -1, labels=iris$Species[idx])
+
+```
 
