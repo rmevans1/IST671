@@ -147,22 +147,59 @@ offense$OYPGStrength <- (1-(offense$OYPGStrength/max(offense$OYPGStrength))) * 1
 offense$OffStrength <- (offense$OPassStrength + offense$ORushStrength + offense$OPPGStrength + offense$OYPGStrength)/4
 
 #create defensive massing strength index
-defense$DPassStrength <- max(defense[,5])-defense[,5]
-defense$DPassStrength <- (1-(defense$DPassStrength/max(defense$DPassStrength))) * 100
+defense$DPassStrength <- max(defense[,6])-defense[,6]
+defense$DPassStrength <- defense$DPassStrength/max(defense$DPassStrength) * 100
 
 #create defensive rushing strength index
-defense$DRushStrength <- max(defense[,6]) - offense[,6]
-defense$DRushStrength <- (1-(defense$DRushStrength/max(defense$DRushStrength))) * 100
+defense$DRushStrength <- max(defense[,5]) - defense[,5]
+defense$DRushStrength <- defense$DRushStrength/max(defense$DRushStrength) * 100
 
 #defenseve points per game
 defense$DPPGStrength <- max(defense[,3]) - defense[,3]
-defense$DPPGStrength <- (1-(defense$DPPGStrength/max(defense$DPPGStrength))) * 100
+defense$DPPGStrength <- defense$DPPGStrength/max(defense$DPPGStrength) * 100
 
 #defense yards per game
 defense$DYPGStrength <- max(defense[,4])-defense[,4]
-defense$DYPGStrength <- (1-(defense$DYPGStrength/max(defense$DYPGStrength))) * 100
+defense$DYPGStrength <- defense$DYPGStrength/max(defense$DYPGStrength) * 100
 
-defense$DffStrength <- (defense$DPassStrength + defense$DRushStrength + defense$DPPGStrength + defense$DYPGStrength)/4
+defense$DefStrength <- (defense$DPassStrength + defense$DRushStrength + defense$DPPGStrength + defense$DYPGStrength)/4
+```
+
+##Simulating a single game with outcomes decided by calculations
+This section utilizes the indexes in order to determine what team SHOULD win a given game
+```{r}
+#Define teams
+home_team <- "Chicago Bears"
+away_team <- "New Orleans Saints"
+
+#bring offense and defense strengths together
+off_game <- subset(offense, Team==home_team | Team==away_team)[,c(1,15,16,19)]
+def_game <- subset(defense, Team==home_team | Team==away_team)[,c(1,14,15,18)]
+
+#merge the two frames together
+game <- merge(off_game,def_game,by.x="Team",by.y="Team")
+
+#Calculate net passing strength
+game$Net_Pass[game$Team==home_team] <- game$OPassStrength[game$Team==home_team] - game$DPassStrength[game$Team==away_team]
+game$Net_Pass[game$Team==away_team] <- game$OPassStrength[game$Team==away_team] - game$DPassStrength[game$Team==home_team]
+
+#calculate net rushing strength
+game$Net_Rush[game$Team==home_team] <- game$ORushStrength[game$Team==home_team] - game$DRushStrength[game$Team==away_team]
+game$Net_Rush[game$Team==away_team] <- game$ORushStrength[game$Team==away_team] - game$DRushStrength[game$Team==home_team]
+
+#determine the winner
+#if the net total is greater for home team they win
+game$Net_Total <- game$Net_Pass + game$Net_Rush
+game$Net_Total
+
+if(game$Net_Total[game$Team == home_team] >= game$Net_Total[game$Team==away_team]){
+  winner <- home_team
+  loser <- away_team
+} else {
+  winner <- away_team
+  loser <- home_team
+}
+print(paste(winner, "beat", loser))
 ```
 
 
