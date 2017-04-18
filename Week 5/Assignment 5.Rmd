@@ -43,3 +43,36 @@ points(kmeans.result$centers[,c("Sepal.Length", "Sepal.Width")], col = 1:3,
 
 ```
 
+##6.2- k-Medoids Clustering
+This uses the k-mediods method of clustering. This is similar k-means with the exception that k-medoids is represented by the object that is the closest to the center of the cluster
+```{r}
+#install.packages("fpc")
+#install.packages("cluster")
+
+library(fpc)
+library(cluster)
+
+pamk.result <- pamk(iris2)
+
+#number of clusters
+pamk.result$nc
+
+#check cluster against actual results
+table(pamk.result$pamobject$clustering, iris$Species)
+
+#display cluster as a graph
+layout(matrix(c(1,2),1,2)) # displays 2 graphs on one row
+plot(pamk.result$pamobject)
+layout(matrix(1)) # change back to one graph per page
+
+#rerun pam but with 3 clusters
+pam.result <- pam(iris2, 3)
+table(pam.result$clustering, iris$Species)
+
+#display cluster as a graph
+layout(matrix(c(1,2),1,2)) # displays 2 graphs on one row
+plot(pam.result)
+layout(matrix(1)) # change back to one graph per page
+```
+
+
