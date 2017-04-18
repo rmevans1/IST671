@@ -125,3 +125,45 @@ ggplot(combined, aes(x=combined$TOP, y=combined$OffPPG)) +
   theme(plot.title = element_text(size=18, face="bold"))
 ```
 
+##Constructing indexes to measure offensive and defensive strength
+In this section multiple fields are combined to create an index. These indexes measure how strong each team is on some aspect. They will be scaled from 0 to 100. 0 being the worst and 100 being the best.
+```{r}
+#create offensive massing strength index
+offense$OPassStrength <- max(offense[,5])-offense[,5]
+offense$OPassStrength <- (1-(offense$OPassStrength/max(offense$OPassStrength))) * 100
+
+#create offensive rushing strength index
+offense$ORushStrength <- max(offense[,6]) - offense[,6]
+offense$ORushStrength <- (1-(offense$ORushStrength/max(offense$ORushStrength))) * 100
+
+#offenseve points per game
+offense$OPPGStrength <- max(offense[,3]) - offense[,3]
+offense$OPPGStrength <- (1-(offense$OPPGStrength/max(offense$OPPGStrength))) * 100
+
+#offense yards per game
+offense$OYPGStrength <- max(offense[,4])-offense[,4]
+offense$OYPGStrength <- (1-(offense$OYPGStrength/max(offense$OYPGStrength))) * 100
+
+offense$OffStrength <- (offense$OPassStrength + offense$ORushStrength + offense$OPPGStrength + offense$OYPGStrength)/4
+
+#create defensive massing strength index
+defense$DPassStrength <- max(defense[,5])-defense[,5]
+defense$DPassStrength <- (1-(defense$DPassStrength/max(defense$DPassStrength))) * 100
+
+#create defensive rushing strength index
+defense$DRushStrength <- max(defense[,6]) - offense[,6]
+defense$DRushStrength <- (1-(defense$DRushStrength/max(defense$DRushStrength))) * 100
+
+#defenseve points per game
+defense$DPPGStrength <- max(defense[,3]) - defense[,3]
+defense$DPPGStrength <- (1-(defense$DPPGStrength/max(defense$DPPGStrength))) * 100
+
+#defense yards per game
+defense$DYPGStrength <- max(defense[,4])-defense[,4]
+defense$DYPGStrength <- (1-(defense$DYPGStrength/max(defense$DYPGStrength))) * 100
+
+defense$DffStrength <- (defense$DPassStrength + defense$DRushStrength + defense$DPPGStrength + defense$DYPGStrength)/4
+```
+
+
+
