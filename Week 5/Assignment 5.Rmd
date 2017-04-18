@@ -88,6 +88,40 @@ hc <- hclust(dist(irisSample), method="ave")
 
 #plot the cluster
 plot(hc, hang = -1, labels=iris$Species[idx])
+```
+
+##6.4- Density-based clustering
+DBSCAN creates a density-based clustering of numberic data. This method clusters objects into one cluster if they are connected by densley populated data
+```{r}
+#remove classifications
+iris2 <- iris[-5]
+#generate classification
+ds <- dbscan(iris2, eps=0.42, MinPts=5)
+
+#check results- in this table 0 is representative of outliers
+table(ds$cluster, iris$Species)
+
+plot(ds,iris2)
+
+#show clusters with representation of sepal.length vs petal.width
+plot(ds, iris2[c(1,4)])
+
+#show data classifications and outliers
+plotcluster(iris2, ds$cluster)
+
+#create a new data set
+set.seed(435)
+idx <- sample(1:nrow(iris), 10)
+newData <- iris[idx,-5]
+newData <- newData + matrix(runif(10*4, min=0, max=0.2), nrow=10, ncol=4)
+#label the data
+myPred <- predict(ds, iris2, newData)
+#check the labels
+plot(iris2[c(1,4)], col=1+ds$cluster)
+points(newData[c(1,4)], pch="*", col=1+myPred, cex=3)
+#check the cluster labels
+table(myPred, iris$Species[idx])
 
 ```
+
 
