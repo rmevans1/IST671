@@ -42,3 +42,13 @@ In this section the data is downloaded from the finviz.com website. However, sin
 finviz <- read.csv("data/finviz.csv")
 ```
 
+##Summarizing the data
+Look at the first few records and a summary of the data
+```{r}
+#first 6 records
+head(finviz)
+
+#summary of each attribute
+summary(finviz)
+```
+
