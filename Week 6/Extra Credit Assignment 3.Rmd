@@ -1,0 +1,31 @@
+---
+title: "Extra Credit Assignment 3"
+author: "Robert Evans"
+date: "April 23, 2017"
+output: word_document
+---
+
+#Chapter 4- Modeling Stock Market Data
+
+##Introduction
+Required packages are downloaded, installed, and loaded. Among these packages are:
+
+* XML
+* ggplot2
+* plyr
+* reshape2
+* zoo
+```{r}
+install.packages("XML")
+install.packages("gglot2")
+install.packages("plyr")
+install.packages("reshape2")
+install.packages("zoo")
+
+library(XML)
+library(ggplot2)
+library(plyr)
+library(reshape2)
+library(zoo)
+```
+
