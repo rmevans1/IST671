@@ -123,3 +123,61 @@ ggplot(sector_avg_prices, aes(x=Sector, y=Sector_Avg_Price, fill=Sector)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
 
+##Generating relative valuations
+In this section a valuation of the stocks is made. This will run a relative valuation where the stock price is compared against different ratios to arrive at a valuation of the stock. This is easier than an intrinsic valuation because it does not require digging into the companies financials.
+```{r}
+#The first step is to melt the data. This converts the data from a wide format to a long one. This allows us to create an average of the different attributes grouped by sector. In the end the data will go back to a wide form with summaries
+sector_avg <- melt(finviz, id="Sector")
+
+#Filter the data out to just the fields that we want averages for
+sector_avg <- subset(sector_avg, variable%in%c("Price", "P.E", "PEG", "P.S", "P.B"))
+
+#Remove Missing values and average the values
+sector_avg <- (na.omit(sector_avg))
+sector_avg$value <- as.numeric(sector_avg$value)
+
+#convert the data back to a wide form to create a summary by sector
+sector_avg <- dcast(sector_avg, Sector~variable, mean)
+colnames(sector_avg)[2:6] <- c("SAvgPE", "SAvgPEG", "SAvgPS", "SAvgPB", "SAvgPrice")
+
+#do the same thing but at the industry level
+industry_avg <- melt(finviz, id=c("Sector","Industry"))
+industry_avg <- subset(industry_avg,variable %in% c("Price","P.E","PEG","P.S","P.B"))
+industry_avg <- (na.omit(industry_avg))
+industry_avg$value <- as.numeric(industry_avg$value)
+industry_avg <- dcast(industry_avg, Sector+Industry~variable, mean)
+industry_avg <- (na.omit(industry_avg))
+colnames(industry_avg)[3:7] <- c("IAvgPE","IAvgPEG","IAvgPS","IAvgPB","IAvgPrice")
+
+#Add the sector and industry averages to the original data set
+finviz <- merge(finviz, sector_avg, by.x="Sector", by.y="Sector")
+finviz <- merge(finviz, industry_avg, by.x=c("Sector","Industry"), by.y=c("Sector","Industry"))
+
+#add field to determine if stock is undervalued (1) or overvalued (0) if the stock value is less than the average
+finviz$SPEUnder <- 0
+finviz$SPEGUnder <- 0
+finviz$SPSUnder <- 0
+finviz$SPBUnder <- 0
+finviz$SPriceUnder <- 0
+finviz$IPEUnder <- 0
+finviz$IPEGUnder <- 0
+finviz$IPSUnder <- 0
+finviz$IPBUnder <- 0
+finviz$IPriceUnder <- 0
+
+#Create the valuations. Replace the 0 with 1 if the value is less than the average
+finviz$SPEUnder[finviz$P.E<finviz$SAvgPE] <- 1
+finviz$SPEGUnder[finviz$PEG<finviz$SAvgPEG] <- 1
+finviz$SPSUnder[finviz$P.S<finviz$SAvgPS] <- 1
+finviz$SPBUnder[finviz$P.B<finviz$SAvgPB] <- 1
+finviz$SPriceUnder[finviz$Price<finviz$SAvgPrice] <- 1
+finviz$IPEUnder[finviz$P.E<finviz$IAvgPE] <- 1
+finviz$IPEGUnder[finviz$PEG<finviz$IAvgPEG] <- 1
+finviz$IPSUnder[finviz$P.S<finviz$IAvgPS] <- 1
+finviz$IPBUnder[finviz$P.B<finviz$IAvgPB] <- 1
+finviz$IPriceUnder[finviz$Price<finviz$IAvgPrice] <- 1
+
+#create a valuation index based on the sum of the above valuations. Higher numbers in this column represent undervalued stocks
+finviz$RelValIndex <- apply(finviz[79:88],1,sum)
+```
+
