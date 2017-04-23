@@ -52,3 +52,74 @@ head(finviz)
 summary(finviz)
 ```
 
+##Cleaning and exploring the data
+In this section the data is cleaned (removal of percentage signs, dollar signs, commas, etc). Then some summaries of the data are run
+```{r}
+#create function to clean the data
+clean_numeric <- function(s){
+  s <- gsub("%|\\$|,|\\)|\\(", "", s)
+  s <- as.numeric(s)
+}
+
+#clean the data
+finviz <- cbind(finviz[,1:6],apply(finviz[,7:68], 2, clean_numeric))
+
+#build a histogram of prices. One thing to note is with extremely high stock prices this will skew the graph making it useless.
+hist(finviz$Price, breaks=100, main="Price Distribution", xlab="Price")
+
+#put a cap of $150/share to get a useable graph
+hist(finviz$Price[finviz$Price<150], breaks=100, main="Price Distribution", xlab="Price")
+
+#Create a graph of sector specific prices.
+#In the previous graph the majority of stocks were priced under $50. This means everything over that would be considered expensive. However, in some sectors the sector may have an average of $200/share which means a stock price of $100/share would be cheap.
+
+#aggregate the sectors by average
+sector_avg_prices <- aggregate(Price~Sector, data=finviz, FUN="mean")
+colnames(sector_avg_prices)[2] <- "Sector_Avg_Price"
+
+#Create the graph
+ggplot(sector_avg_prices, aes(x=Sector, y=Sector_Avg_Price, fill=Sector)) +
+  geom_bar(stat="identity") + ggtitle("Sector Avg Prices") +
+  theme(axis.text.x = element_text(angle = 90, hjust=1))
+
+#Looking into the financial sector
+
+#Create a summary of the average price by industry
+industry_avg_prices <- aggregate(Price~Sector+Industry, data=finviz,FUN="mean")
+industry_avg_prices <- industry_avg_prices[order(industry_avg_prices$Sector,industry_avg_prices$Industry),]
+colnames(industry_avg_prices)[3] <- "Industry_Avg_Price"
+
+#Isolate the conglomerates sector
+industry_chart <- subset(industry_avg_prices,Sector=="Financial")
+
+#create the chart
+ggplot(industry_chart, aes(x=Industry, y=Industry_Avg_Price, fill=Industry)) +
+  geom_bar(stat="identity") + theme(legend.position="none") + ggtitle("Industry Avg Prices") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+#It appears that Property & Casualty Insurance is the high industry. We will drill down into that to determine which company is causing the high stock price
+company_chart <- subset(finviz, Industry=="Property & Casualty Insurance")
+
+#create the chart
+ggplot(company_chart, aes(x=Company, y=Price, fill=Company)) +
+  geom_bar(stat="identity") + theme(legend.position="none") +
+  ggtitle("Company Avg Prices") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+#It appears that the company with the high stock price is Berkshire Hathaway with a stock price of over $400K/share. We will remove that to get a more realistic average
+#Note the book shows only BRK-A. In this data set there is BRK-A and BRK-B. I will remove both of those. #In the conglomerates category I will also remove SEB to get a more realistic chart in the end as well.
+
+finviz <- subset(finviz, Ticker!="BRK-A")
+finviz <- subset(finviz, Ticker!="BRK-B")
+finviz <- subset(finviz, Ticker!="SEB")
+
+#recreate sector averages
+sector_avg_prices <- aggregate(Price~Sector, data=finviz, FUN="mean")
+colnames(sector_avg_prices)[2] <- "Sector_Avg_Price"
+
+#create the graph
+ggplot(sector_avg_prices, aes(x=Sector, y=Sector_Avg_Price, fill=Sector)) +
+  geom_bar(stat="identity") + ggtitle("Sector Avg Prices") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
