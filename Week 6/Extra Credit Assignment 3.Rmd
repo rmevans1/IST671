@@ -29,3 +29,16 @@ library(reshape2)
 library(zoo)
 ```
 
+##Acquiring stock market data
+In this section the data is downloaded from the finviz.com website. However, since the stock data is already provided it will not be downloaded.
+```{r}
+#build download url.
+#url_to_open <- sprintf("http://finviz.com/export.ashx?v=152&c=%s", paste(0:68, collapse = ","))
+
+#download csv file
+#finviz <- read.csv(url(url_to_open))
+
+#load the csv file
+finviz <- read.csv("data/finviz.csv")
+```
+
