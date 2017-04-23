@@ -16,11 +16,11 @@ Required packages are downloaded, installed, and loaded. Among these packages ar
 * reshape2
 * zoo
 ```{r}
-install.packages("XML")
-install.packages("gglot2")
-install.packages("plyr")
-install.packages("reshape2")
-install.packages("zoo")
+#install.packages("XML")
+#install.packages("gglot2")
+#install.packages("plyr")
+#install.packages("reshape2")
+#install.packages("zoo")
 
 library(XML)
 library(ggplot2)
