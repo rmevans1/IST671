@@ -62,7 +62,7 @@ clean_numeric <- function(s){
 }
 
 #clean the data
-finviz <- cbind(finviz[,1:6],apply(finviz[,7:68], 2, clean_numeric))
+finviz <- cbind(finviz[,1:6],apply(finviz[,7:70], 2, clean_numeric))
 
 #build a histogram of prices. One thing to note is with extremely high stock prices this will skew the graph making it useless.
 hist(finviz$Price, breaks=100, main="Price Distribution", xlab="Price")
@@ -179,5 +179,22 @@ finviz$IPriceUnder[finviz$Price<finviz$IAvgPrice] <- 1
 
 #create a valuation index based on the sum of the above valuations. Higher numbers in this column represent undervalued stocks
 finviz$RelValIndex <- apply(finviz[79:88],1,sum)
+```
+
+##Screening stocks and analyzing historical prices.
+In this section we will filter down the data into stocks that we believe are a good investment. In addition a 50 and 200 moving day average will be calculated and graphed against the adjusted close of the stock. This data will be collected from yahoo finance. Filter criteria is as follows:
+
+* Only US Companys
+* Share price between $20 and $100
+* Volume greater than 10,000
+* Postive earnings per share now and projected in the future
+* Total debt to equity ratio less than 1
+* Beta less than 1.5
+* Insitutional ownership less than 30%
+* Relative valuation index value greater than 8
+```{r}
+# Filter the stocks
+target_stocks <- subset(finviz, Price>20 & Price<100 & 
+                          Volume>10000)
 ```
 
