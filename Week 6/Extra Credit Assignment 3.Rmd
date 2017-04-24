@@ -195,6 +195,71 @@ In this section we will filter down the data into stocks that we believe are a g
 ```{r}
 # Filter the stocks
 target_stocks <- subset(finviz, Price>20 & Price<100 & 
-                          Volume>10000)
+                          Volume>10000 &
+                          Country=="USA" &
+                          EPS..ttm.>0 &
+                          EPS.growth.next.year>0 &
+                          EPS.growth.next.5.years>0 &
+                          Total.Debt.Equity<1 & Beta<1.5 &
+                          Institutional.Ownership<30 &
+                          RelValIndex>8)
+
+#display a list of target stock symbols
+target_stocks$Ticker
+
+#get the historical averages from yahoo finance
+counter <- 0
+for(symbol in target_stocks$Ticker){
+  #fetch the data
+  url <- paste0("http://ichart.finance.yahoo.com/table.csv?s=",symbol,"&a=08&b=7&c=1984&d=01&e=23&f=2017&g=d&ignore=.csv")
+  stock <- read.csv(url)
+  stock <- na.omit(stock)
+  colnames(stock)[7] <- "AdjClose"
+  stock[,1] <- as.Date(stock[,1])
+  stock <- cbind(Symbol=symbol,stock)
+  
+  #calculate the 50 day moving average of the stock
+  maxrow <- nrow(stock)-49
+  ma50 <- cbind(stock[1:maxrow,1:2],rollmean(stock$AdjClose,50,align="right"))
+  
+  #calculate the 200 day moving average of the stock
+  maxrow <- nrow(stock)-199
+  ma200 <- cbind(stock[1:maxrow,1:2],rollmean(stock$AdjClose,200,align="right"))
+  
+  #combine the moving average with the stock data frame
+  stock <- merge(stock,ma50,by.x=c("Symbol","Date"),by.y=c("Symbol", "Date"),all.x=TRUE)
+  colnames(stock)[9] <- "MovAvg50"
+   
+  stock <- merge(stock,ma200,by.x=c("Symbol","Date"),by.y=c("Symbol", "Date"),all.x=TRUE)
+  colnames(stock)[10] <- "MovAvg200"
+   
+   #create a chart for each stock
+   price_chart <- melt(stock[,c(1,2,8,9,10)],id=c("Symbol","Date"))
+   qplot(Date, value, data=price_chart, geom="line", color=variable, main=paste(symbol,"Daily Stock Prices"),ylab="Price")
+   ggsave(filename=paste0("stock_price_",counter,".png"))
+    
+   #summarize the open, high, low and closing prices of the stock
+   price_summary <- ddply(stock, "Symbol", summarise, open=Open[nrow(stock)], high=max(High), low=min(Low),close=AdjClose[1])
+   
+   #create a master data frame of those values
+   if(counter==0){
+     stocks <- rbind(stock)
+     price_summaries <- rbind(price_summary)
+   }else{
+     stocks <- rbind(stocks, stock)
+     price_summaries <- rbind(price_summaries, price_summary)
+   }
+   counter <- counter + 1
+}
+
+#create a graph of all the daily stock prices
+qplot(Date, AdjClose, data=stocks, geom="line", color=Symbol,  main="Daily Stock Prices")
+ggsave(filename=("stock_price_combined.png"))
+
+#create a graph showing all the above stocks with the open, high, low, and close averages
+summary <- melt(price_summaries,id="Symbol")
+ggplot(summary, aes(x=variable, y=value, fill=Symbol)) + 
+  geom_bar(stat="identity") + facet_wrap(~Symbol)
+ggsave(filename=("stock_price_summaries.png"))
 ```
 
