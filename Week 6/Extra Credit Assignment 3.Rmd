@@ -236,7 +236,7 @@ for(symbol in target_stocks$Ticker){
    #create a chart for each stock
    price_chart <- melt(stock[,c(1,2,8,9,10)],id=c("Symbol","Date"))
    qplot(Date, value, data=price_chart, geom="line", color=variable, main=paste(symbol,"Daily Stock Prices"),ylab="Price")
-   ggsave(filename=paste0("stock_price_",counter,".png"))
+   ggsave(filename=paste0("../../Week 6/stock_price_",counter,".png"))
     
    #summarize the open, high, low and closing prices of the stock
    price_summary <- ddply(stock, "Symbol", summarise, open=Open[nrow(stock)], high=max(High), low=min(Low),close=AdjClose[1])
@@ -254,12 +254,12 @@ for(symbol in target_stocks$Ticker){
 
 #create a graph of all the daily stock prices
 qplot(Date, AdjClose, data=stocks, geom="line", color=Symbol,  main="Daily Stock Prices")
-ggsave(filename=("stock_price_combined.png"))
+ggsave(filename=("../../Week 6/stock_price_combined.png"))
 
 #create a graph showing all the above stocks with the open, high, low, and close averages
 summary <- melt(price_summaries,id="Symbol")
 ggplot(summary, aes(x=variable, y=value, fill=Symbol)) + 
   geom_bar(stat="identity") + facet_wrap(~Symbol)
-ggsave(filename=("stock_price_summaries.png"))
+ggsave(filename=("../../Week 6/stock_price_summaries.png"))
 ```
 
