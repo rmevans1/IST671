@@ -57,3 +57,47 @@ points(df[outlier.list2,], col="blue", pch="x", cex=1.5)
 
 ```
 
+##7.2 Outlier Detection with LOF
+Local Outlier Focus (LOF) is used for identifying density-based locaal outliers. In this method the density of a point is compared with its neighbors. If the density is significantly lower then it is considered an outlier.
+```{r}
+#Download and install package
+#install.packages("DMwR")
+
+#load required package
+library(DMwR)
+
+#remove the categorical column species
+iris2 <- iris[,1:4]
+#score data points for outlier detection
+outlier.scores <- lofactor(iris2, k=5)
+plot(density(outlier.scores))
+
+#pick top five as outliers
+outliers <- order(outlier.scores, decreasing=T)[1:5]
+#print the outlier indexes
+print(outliers)
+#print outlier info
+print(iris2[outliers,])
+
+#show the outliers with a biplot of the two principal components
+n <- nrow(iris2)
+labels <- 1:n
+labels[-outliers] <- "."
+biplot(prcomp(iris2), cex=.8, xlabs=labels)
+
+#plot outliers for all variables
+pch <- rep(".", n)
+pch[outliers] <- "+"
+col <- rep("black", n)
+col[outliers] <- "red"
+pairs(iris2, pch=pch, col=col)
+
+#install the Rlof package. This package allows for multiple number of neighbors
+install.packages("Rlof")
+library(Rlof)
+outlier.scores <- lof(iris2, k=5)
+#try with different # of neighbors (5-10)
+outlier.scores <- lof(iris2, k=c(5:10))
+```
+
+
