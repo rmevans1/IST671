@@ -1,0 +1,9 @@
+---
+title: "Assignment 6"
+author: "Robert Evans"
+date: "April 23, 2017"
+output: word_document
+---
+
+#Chapter 7- Outlier Detection
+This section goes over the various way of detecting outliers.
