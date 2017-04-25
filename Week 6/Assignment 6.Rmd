@@ -136,3 +136,21 @@ points(kmeans.result$centers[,c("Sepal.Length","Sepal.Width")], col=1:3,
 points(iris2[outliers, c("Sepal.Length", "Sepal.Width")], pch="+", col=4)
 ```
 
+##7.4 Outlier Detection from Time Series Data
+This section goes through a quick method of detecting outliers in Time Series Data.
+```{r}
+#use robust fitting
+f <- stl(AirPassengers, "periodic", robust=TRUE)
+#calculate outliers
+(outliers <- which(f$weights<1e-8))
+
+#set up graph layout
+op <- par(mar = c(0, 4, 0, 3), oma = c(5, 0, 4, 0), mfcol = c(4, 1))
+plot(f, set.pars=NULL)
+sts <- f$time.series
+
+#plot the outliers
+points(time(sts)[outliers], 0.8*sts[,"remainder"][outliers], pch="x", col="red")
+par(op) #reset the layout
+```
+
