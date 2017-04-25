@@ -40,7 +40,7 @@ attach(df)
 #find the index of outliers from y
 (b <- which(y %in% boxplot.stats(y)$out))
 
-detatch(df)
+#detatch(df)
 
 # outliers in both x and y
 (outlier.list1 <- intersect(a,b))
@@ -93,7 +93,7 @@ col[outliers] <- "red"
 pairs(iris2, pch=pch, col=col)
 
 #install the Rlof package. This package allows for multiple number of neighbors
-install.packages("Rlof")
+#install.packages("Rlof")
 library(Rlof)
 outlier.scores <- lof(iris2, k=5)
 #try with different # of neighbors (5-10)
